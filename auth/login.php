@@ -11,8 +11,11 @@ $link .= $_SERVER['HTTP_HOST'];
 $userip = getUserIpAddr();
 $time = time();
 $otherInfo = $conn->query("SELECT * FROM users")->num_rows;
-require '../vendor/autoload.php';
-$pterodactyl = new \HCGCloud\Pterodactyl\Pterodactyl('0w3SjCSueRf7Hu8oazuw2OLPWskBsIrXx7MJHP51VytZnUib', 'https://gp.vexpanel.cf');
+$siteConfig = $conn->query("SELECT * FROM config")->fetch_assoc();
+$apiKey = $siteConfig['ptero_api'];
+$apiDomain = $siteConfig['ptero_domain'];
+//require './vendor/autoload.php';
+//$pterodactyl = new \HCGCloud\Pterodactyl\Pterodactyl($apiKey, $apiDomain);
 ini_set('display_errors', 1);
 ini_set('display_startup_errors', 1);
 ini_set('max_execution_time', 300); //300 seconds = 5 minutes. In case if your CURL is slow and is loading too much (Can be IPv6 problem)
@@ -64,11 +67,11 @@ if(get('code')) {
 
 if(session('access_token')) {
   $user = apiRequest($apiURLBase);
-  //checkLicense($license, $link, $otherInfo);
+  checkLicense($license, $link, $otherInfo);
   $curl = curl_init();
 
   curl_setopt_array($curl, array(
-    CURLOPT_URL => 'http://api.vex.forcehost.net/checkLicense.php?key='.$license.'&domain='.$link.'&users='.$otherInfo,
+    CURLOPT_URL => 'http://vex.forcehost.net/checkLicense.php?key='.$license.'&domain='.$link.'&users='.$otherInfo,
     CURLOPT_RETURNTRANSFER => true,
     CURLOPT_ENCODING => '',
     CURLOPT_MAXREDIRS => 10,
@@ -108,41 +111,47 @@ if(session('access_token')) {
   if(!$user->id || !$user->email) { 
     die("Sorry, we can't make your user if you change the scopes for the Discord oAuth2 system.");
   }
+  $checkDatabase = $conn->query("SELECT * FROM users WHERE discord_id='".mysqli_real_escape_string($conn, $user->id)."'");
 
-  $dbcheck = $conn->query("SELECT * FROM users WHERE discord_id='".$user->id."'");
-  if($dbcheck->num_rows == 0){
-    $ptero_user = genRandom(15);
-    $ptero_pwd1 = genRandom(25);
-    $ptero_pwd = base64_encode($ptero_pwd1);
-    try {
-        $ptuser = $pterodactyl->createUser([
-            'email' => $user->email,
-            'username' => $ptero_user,
-            'password' => $ptero_pwd1,
-            'language' => 'en',
-            'root_admin' => false,
-            'first_name' => $user->id,
-            'last_name' => 'Vex-Panel'
-        ]);
-        $servers = apiRequest("https://discord.com/api/users/@me/guilds");
-        $serversjson = json_encode($servers);
-        $conn->query("INSERT INTO users (discord_usr, discord_id, user_email, first_ip, last_ip, ptero_user, ptero_pwd, ptero_uid, minutes_idle, coins, last_seen, ram, cpu, disk_space, server_slots) VALUES ('".mysqli_real_escape_string($conn, base64_encode($user->username))."', '".$user->id."', '".mysqli_real_escape_string($conn, $user->email)."', '".mysqli_real_escape_string($conn, base64_encode($userip))."', '".mysqli_real_escape_string($conn, base64_encode($userip))."', '".mysqli_real_escape_string($conn, base64_encode($ptero_user))."', '".mysqli_real_escape_string($conn, base64_encode($ptero_pwd1))."', '".$ptuser->id."', '0', '0', '".mysqli_real_escape_string($conn, $time)."', '".mysqli_real_escape_string($conn, 1000)."', '".mysqli_real_escape_string($conn, 50)."', '".mysqli_real_escape_string($conn, 10000)."', '".mysqli_real_escape_string($conn, 1)."')");
-        $_SESSION['discord_user'] = $user;
-        $_SESSION['loggedin'] = true;
-        header("location: ../");
-        die();
-    } catch(\HCGCloud\Pterodactyl\Exceptions\ValidationException $e){
-        print_r($e->errors());
-    }
+  if ($checkDatabase->num_rows == 0) {
+        $ptero_pwd = genRandom(25);
+    $ptero_user = genRandom(17);
+    $curl = curl_init($apiDomain."/api/application/users");
+    curl_setopt($curl, CURLOPT_RETURNTRANSFER, 1);
+    curl_setopt($curl, CURLOPT_HTTPHEADER, array(
+      "Authorization: Bearer ".$apiKey,
+      "Content-Type: application/json",
+      "Accept: Application/vnd.pterodactyl.v1+json"
+    ));
+    curl_setopt($curl, CURLOPT_POST, 1);
+    curl_setopt($curl, CURLOPT_POSTFIELDS, json_encode(array(
+      "username" => $ptero_user,
+      "email" => $user->email,
+      "first_name" => "A",
+      "last_name" => "User",
+      "password" => $ptero_pwd,
+    )));
+    $userRes = curl_exec($curl);
+        $err = curl_error($curl);
+    curl_close($curl);
+        if ($err) {
+          $errCode = base64_encode($err);
+          header("location: ../login.php?err=".$errCode);
+          die();
+          }else{
+            $ptuser = json_decode($userRes, true);
+        $conn->query("INSERT INTO users (discord_usr, discord_id, user_email, first_ip, last_ip, ptero_user, ptero_pwd, ptero_uid, minutes_idle, coins, last_seen, ram, cpu, disk_space, server_slots) VALUES ('".mysqli_real_escape_string($conn, base64_encode($user->username))."', '".$user->id."', '".mysqli_real_escape_string($conn, $user->email)."', '".mysqli_real_escape_string($conn, base64_encode($userip))."', '".mysqli_real_escape_string($conn, base64_encode($userip))."', '".mysqli_real_escape_string($conn, base64_encode($ptero_user))."', '".mysqli_real_escape_string($conn, base64_encode($ptero_pwd))."', '".$ptuser['attributes']['id']."', '0', '0', '".mysqli_real_escape_string($conn, $time)."', '".mysqli_real_escape_string($conn, 1000)."', '".mysqli_real_escape_string($conn, 50)."', '".mysqli_real_escape_string($conn, 10000)."', '".mysqli_real_escape_string($conn, 1)."')");
+          $_SESSION['user'] = $user;
+          $_SESSION['loggedin'] = true;
+          header("location: ../");
+          }
   }else{
-    $_SESSION['user'] = $user;
-    $_SESSION['loggedin'] = true;
-    header("location: ../");
-    die();
+          $_SESSION['user'] = $user;
+          $_SESSION['loggedin'] = true;
+          header("location: ../");
   }
-  }
-} else {
-  header("location: ./");
+}}else{
+  header("location: ../login.php");
 }
 
 
@@ -236,3 +245,4 @@ function getUserIpAddr(){
   }
   return $ip;
 }
+?>

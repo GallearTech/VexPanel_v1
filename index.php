@@ -204,7 +204,6 @@ if(isset($_SESSION['loggedin']) == true){
                                                     <th>Server Memory</th>
                                                     <th>Server CPU</th>
                                                     <th>Server Disk</th>
-                                                    <th>Server Status</th>
                                                     <th>Server Actions</th>
                                                 </tr>
                                             </thead>
@@ -219,7 +218,7 @@ if( $results->num_rows !== 0 ) {
     echo "<td>" . htmlspecialchars($rowitem['server_ram']) . "mb</td>";
     echo "<td>" . htmlspecialchars($rowitem['server_cpu']) . "%</td>";
     echo "<td>" . htmlspecialchars($rowitem['server_disksp']) . "mb</td>";
-    echo "<td>" . '<a href="./inc/delete.php?id=' . $rowitem['server_uid'] . '" class="btn btn-danger btn-sm" role="button">Delete</a> &nbsp; <a class="btn btn-success btn-sm" role="button">Backup (soon)</a> ';
+    echo "<td>" . '<a href="./api/web/deleteServer.php?id=' . $rowitem['server_uid'] . '" class="btn btn-danger btn-sm" role="button">Delete</a> &nbsp; <a class="btn btn-success btn-sm" role="button">Backup (soon)</a> ';
     echo "</tr>";
   }}else{
 echo ("<b>You have no servers.</b>");

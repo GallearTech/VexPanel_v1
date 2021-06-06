@@ -121,68 +121,6 @@ if(isset($_SESSION['loggedin']) == true){
                 <!-- Dashboard Ecommerce Starts -->
                 <section id="dashboard-ecommerce">
                     <div class="row">
-                        <div class="col-lg-3 col-sm-6 col-12">
-                            <div class="card text-center">
-                                <div class="card-content">
-                                    <div class="card-body">
-                                        <div class="avatar bg-rgba-success p-50 m-0 mb-1">
-                                            <div class="avatar-content">
-                                                <i class="fas fa-memory text-success font-medium-5"></i>
-                                            </div>
-                                        </div>
-                                        <h2 class="text-bold-700"><?php echo $userRam ?>MB</h2>
-                                        <p class="mb-0 line-ellipsis">Total Ram Left</p>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="col-lg-3 col-sm-6 col-12">
-                            <div class="card text-center">
-                                <div class="card-content">
-                                    <div class="card-body">
-                                        <div class="avatar bg-rgba-success p-50 m-0 mb-1">
-                                            <div class="avatar-content">
-                                                <i class="fas fa-hdd text-success font-medium-5"></i>
-                                            </div>
-                                        </div>
-                                        <h2 class="text-bold-700"><?php echo $userDisk ?>MB</h2>
-                                        <p class="mb-0 line-ellipsis">Total Disk Left</p>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="col-lg-3 col-sm-6 col-12">
-                            <div class="card text-center">
-                                <div class="card-content">
-                                    <div class="card-body">
-                                        <div class="avatar bg-rgba-success p-50 m-0 mb-1">
-                                            <div class="avatar-content">
-                                                <i class="fas fa-microchip text-success font-medium-5"></i>
-                                            </div>
-                                        </div>
-                                        <h2 class="text-bold-700"><?php echo $userCPU ?>%</h2>
-                                        <p class="mb-0 line-ellipsis">Total CPU Left</p>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="col-lg-3 col-sm-6 col-12">
-                            <div class="card text-center">
-                                <div class="card-content">
-                                    <div class="card-body">
-                                        <div class="avatar bg-rgba-success p-50 m-0 mb-1">
-                                            <div class="avatar-content">
-                                                <i class="fas fa-server text-success font-medium-5"></i>
-                                            </div>
-                                        </div>
-                                        <h2 class="text-bold-700"><?php echo $userSlots ?></h2>
-                                        <p class="mb-0 line-ellipsis">Total Slots Left</p>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="row">
                     <div class="col-md-12 col-12">
                             <div class="card">
                                 <div class="card-header">

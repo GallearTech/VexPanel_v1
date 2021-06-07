@@ -9,7 +9,7 @@ if(isset($_SESSION['loggedin']) == true){
   $userDisk = $userInfo['disk_space'];
   $userSlots = $userInfo['server_slots'];
   }else{
-    header("location: ./login");
+    header("location: ./login.php");
     die();
   }
 ?>

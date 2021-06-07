@@ -76,7 +76,7 @@ require './config.php';
                                                         <div class="text-left">
                                                         </div>
                                                     </div>
-                                                    <a style="width: 100% !important;" href="./auth/login.php" class="btn btn-primary float-right btn-inline">Login with Discord</a>
+                                                    <a style="width: 100% !important;" href="./auth/login.php?action=login" class="btn btn-primary float-right btn-inline">Login with Discord</a>
                                                 </form>
                                             </div>
                                         </div>

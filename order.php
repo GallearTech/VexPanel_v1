@@ -12,6 +12,7 @@ if(isset($_SESSION['loggedin']) == true){
     header("location: ./login");
     die();
   }
+  header("location: ./");
 ?>
 <!DOCTYPE html>
 <html class="loading" lang="en" data-textdirection="ltr">

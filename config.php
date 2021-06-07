@@ -1,5 +1,6 @@
 <?php
 $siteName = '';
+$siteVersion = "v1.2";
 
 $oauth_id = '';
 $oauth_sec = '';

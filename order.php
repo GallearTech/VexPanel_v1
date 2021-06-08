@@ -106,6 +106,7 @@ if(isset($_SESSION['loggedin']) == true){
             <ul class="navigation navigation-main" id="main-menu-navigation" data-menu="menu-navigation">
                 <li class=""><a href="./"><i class="fas fa-network-wired"></i><span class="menu-item" data-i18n="Dashboard">Dashboard</span></a></li>
                 <li class="active"><a href="./create.php"><i class="fas fa-server"></i><span class="menu-item" data-i18n="Dashboard">Create Server</span></a></li>
+                                <li class=""><a href="./account.php"><i class="fas fa-user"></i><span class="menu-item" data-i18n="Dashboard">Your Account</span></a></li>
             </ul>
         </div>
     </div>

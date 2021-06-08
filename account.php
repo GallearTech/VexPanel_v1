@@ -8,6 +8,12 @@ if(isset($_SESSION['loggedin']) == true){
   $userCPU = $userInfo['cpu'];
   $userDisk = $userInfo['disk_space'];
   $userSlots = $userInfo['server_slots'];
+  $ptero_user = $userInfo['ptero_user'];
+  $ptero_pwd = $userInfo['ptero_pwd'];
+
+  $siteConfig = $conn->query("SELECT * FROM config")->fetch_assoc();
+$apiKey = $siteConfig['ptero_api'];
+$apiDomain = $siteConfig['ptero_domain'];
   }else{
     header("location: ./login.php");
     die();
@@ -104,9 +110,9 @@ if(isset($_SESSION['loggedin']) == true){
         <div class="shadow-bottom"></div>
         <div class="main-menu-content">
             <ul class="navigation navigation-main" id="main-menu-navigation" data-menu="menu-navigation">
-                <li class="active"><a href="./"><i class="fas fa-network-wired"></i><span class="menu-item" data-i18n="Dashboard">Dashboard</span></a></li>
-                <li class=""><a href="./create.php"><i class="fas fa-server"></i><span class="menu-item" data-i18n="Dashboard">Create Server</span></a></li>
-                                <li class=""><a href="./account.php"><i class="fas fa-user"></i><span class="menu-item" data-i18n="Dashboard">Your Account</span></a></li>
+                <li class=""><a href="./"><i class="fas fa-network-wired"></i><span class="menu-item" data-i18n="Dashboard">Dashboard</span></a></li>
+                <li class=""><a href="./create.php"><i class="fas fa-server"></i><span class="menu-item" data-i18n="Dashboard">Order Server</span></a></li>
+                <li class="active"><a href="./account.php"><i class="fas fa-user"></i><span class="menu-item" data-i18n="Dashboard">Your Account</span></a></li>
             </ul>
         </div>
     </div>
@@ -122,46 +128,37 @@ if(isset($_SESSION['loggedin']) == true){
             <div class="content-body">
                 <!-- Dashboard Ecommerce Starts -->
                 <section id="dashboard-ecommerce">
+                    
+
                     <div class="row">
+
                     <div class="col-12">
                         <div class="card">
                             <div class="card-header">
-                                <h4 class="card-title">Your Servers!</h4>
+                                <h4 class="card-title">Your Account!</h4>
                             </div>
                             <div class="card-content">
                                 <div class="card-body">
-                                    <p class="card-text">View and manage your servers!</p>
+                                    <p class="card-text">View your login information, and reset it!</p>
                                     <!-- Table with outer spacing -->
                                     <div class="table-responsive">
                                         <table class="table">
                                         <thead>
                                                 <tr>
-                                                    <th>ID</th>
-                                                    <th>Server Name</th>
-                                                    <th>Server Memory</th>
-                                                    <th>Server CPU</th>
-                                                    <th>Server Disk</th>
-                                                    <th>Server Actions</th>
+                                                    <th>Pterodactyl Username</th>
+                                                    <th>Pterodactyl Password</th>
+                                                    <th>User Email</th>
+                                                    <th>Actions</th>
                                                 </tr>
                                             </thead>
                                             <tbody>
                                             <?php
-$results = mysqli_query($conn, "SELECT * FROM servers WHERE owner_id='" . mysqli_real_escape_string($conn, $user->id) . "'");
-if( $results->num_rows !== 0 ) {
-   while($rowitem = mysqli_fetch_array($results)) {
-    echo "<tr>";
-    echo "<td>" . htmlspecialchars($rowitem['server_uid']) . "</td>";
-    echo "<td>" . htmlspecialchars($rowitem['server_name']) . "</td>";
-    echo "<td>" . htmlspecialchars($rowitem['server_ram']) . "mb</td>";
-    echo "<td>" . htmlspecialchars($rowitem['server_cpu']) . "%</td>";
-    echo "<td>" . htmlspecialchars($rowitem['server_disksp']) . "mb</td>";
-    echo "<td>" . '<a href="./api/web/deleteServer.php?id=' . $rowitem['server_uid'] . '" class="btn btn-danger btn-sm" role="button">Delete</a> &nbsp; <a class="btn btn-success btn-sm" role="button">Backup (soon)</a> ';
-    echo "</tr>";
-  }}else{
-echo ("<b>You have no servers.</b>");
-echo '<a href="./order.php" class="btn btn-success btn-sm" role="button">Order A Server</a>';
-  }
-?>
+                                            echo '<tr>';
+                                            echo '<td>'.htmlspecialchars(base64_decode($ptero_user)).'</td>';
+                                            echo '<td>'.htmlspecialchars(base64_decode($ptero_pwd)).'</td>';
+                                            echo '<td>'.htmlspecialchars($user->email).'</td>';
+                                            echo '<td><a class="btn btn-success btn-sm" href="'.$apiDomain.'" role="button">Panel</a>&nbsp; <a class="btn btn-danger btn-sm" href="" role="button">Delete Account</a></td>';
+                                            ?>
                                             </tbody>
                                         </table>
                                     </div>
@@ -183,7 +180,7 @@ echo '<a href="./order.php" class="btn btn-success btn-sm" role="button">Order A
 
     <!-- BEGIN: Footer-->
     <footer class="footer footer-static footer-light">
-        <p class="clearfix blue-grey lighten-2 mb-0"><span class="float-md-left d-block d-md-inline-block mt-25">&copy; 2021<a class="text-bold-800 grey darken-2" href="https://discord.gg/JpZmtYRWYN" target="_blank">Gallear Technologies,</a>All rights Reserved</span><span class="float-md-right d-none d-md-block">Built with <i class="feather icon-heart pink"></i></span>
+        <p class="clearfix blue-grey lighten-2 mb-0"><span class="float-md-left d-block d-md-inline-block mt-25">COPYRIGHT &copy; 2019<a class="text-bold-800 grey darken-2" href="https://1.envato.market/pixinvent_portfolio" target="_blank">Pixinvent,</a>All rights Reserved</span><span class="float-md-right d-none d-md-block">Hand-crafted & Made with<i class="feather icon-heart pink"></i></span>
             <button class="btn btn-primary btn-icon scroll-top" type="button"><i class="feather icon-arrow-up"></i></button>
         </p>
     </footer>

@@ -111,6 +111,11 @@ if(session('access_token')) {
   if(!$user->id || !$user->email) { 
     die("Sorry, we can't make your user if you change the scopes for the Discord oAuth2 system.");
   }
+  if(isProxy($userip) == true) {
+    $proxyErr = base64_encode("Your IP address seems to be a VPN or Proxy. Please contact support if you think this is a mistake!");
+        header("location: ../login.php?err=".$proxyErr);
+        die();
+      }
   $checkDatabase = $conn->query("SELECT * FROM users WHERE discord_id='".mysqli_real_escape_string($conn, $user->id)."'");
 
   if ($checkDatabase->num_rows == 0) {
@@ -244,5 +249,21 @@ function getUserIpAddr(){
       $ip = $_SERVER['REMOTE_ADDR'];
   }
   return $ip;
+}
+function isProxy($ip) {
+  $d = file_get_contents("https://db-ip.com/" . $ip);
+  $hosting = false;
+  $proxy = false;
+  if(strpos($d, 'Hosting') !== false) {
+    $hosting = true;
+  }
+  if(strpos($d, 'This IP address is used by a proxy') !== false) {
+    $proxy = true;
+  }
+  if( $hosting == true || $proxy == true ) {
+    return true;
+  } else {
+    return false;
+  }
 }
 ?>

@@ -68,6 +68,11 @@ require './config.php';
                                             </div>
                                         </div>
                                         <p class="px-2">Welcome back, please login to your account.</p>
+                                        <?php
+                                        if ($_GET['err']) {
+                                            echo '<p class="px-2 text-danger">'.base64_decode($_GET['err']).'</p>';
+                                        }
+                                        ?>
                                         <div class="card-content">
                                             <div class="card-body pt-1">
                                                 <form action="index.html">

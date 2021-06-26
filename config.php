@@ -1,6 +1,11 @@
 <?php
 $siteName = '';
-$siteVersion = "v1.2";
+$siteVersion = "v1.2 BETA";
+
+function latestVersion(){
+	$latestVersion = file_get_contents("https://raw.githubusercontent.com/GallearTech/VexPanel/main/latestVersion.txt");
+	echo $latestVersion;
+}
 
 $oauth_id = '';
 $oauth_sec = '';

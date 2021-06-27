@@ -3,7 +3,7 @@ $siteName = '';
 $siteVersion = "v1.2 BETA";
 
 function latestVersion(){
-	$latestVersion = file_get_contents("https://raw.githubusercontent.com/GallearTech/VexPanel/main/latestVersion.txt");
+	$latestVersion = file_get_contents("https://raw.githubusercontent.com/GallearTech/VexPanel_v1/main/latestVersion.txt");
 	echo $latestVersion;
 }
 

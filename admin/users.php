@@ -109,6 +109,7 @@ if(isset($_SESSION['loggedin']) == true){
                 </li>
                 <li class=""><a href="./"><i class="fas fa-cogs"></i><span class="menu-item" data-i18n="Dashboard">System Overview</span></a></li>
                 <li class="active"><a href="./users.php"><i class="fas fa-users"></i><span class="menu-item" data-i18n="Dashboard">Users</span></a></li>
+                <li class=""><a href="./servers.php"><i class="fas fa-server"></i><span class="menu-item" data-i18n="Dashboard">Servers</span></a></li>
             </ul>
         </div>
     </div>

@@ -8,16 +8,15 @@ if(isset($_SESSION['loggedin']) == true){
   $userCPU = $userInfo['cpu'];
   $userDisk = $userInfo['disk_space'];
   $userSlots = $userInfo['server_slots'];
-  $siteConfig = $conn->query("SELECT * FROM config")->fetch_assoc();
+    $siteConfig = $conn->query("SELECT * FROM config")->fetch_assoc();
   $siteMaintenance = $siteConfig['siteMaintenance'];
   if ($siteMaintenance == 1) {
-  	header("location: ./maintenance.php");
+    header("location: ./maintenance.php");
   }
   }else{
     header("location: ./login.php");
     die();
   }
-  header("location: ./");
 ?>
 <!DOCTYPE html>
 <html class="loading" lang="en" data-textdirection="ltr">
@@ -30,7 +29,7 @@ if(isset($_SESSION['loggedin']) == true){
     <meta name="description" content="Vuexy admin is super flexible, powerful, clean &amp; modern responsive bootstrap 4 admin template with unlimited possibilities.">
     <meta name="keywords" content="admin template, Vuexy admin template, dashboard template, flat admin template, responsive admin template, web app">
     <meta name="author" content="PIXINVENT">
-    <title><?php echo $siteName ?> - Dashboard</title>
+    <title><?php echo $siteName ?> - Order</title>
     <link rel="apple-touch-icon" href="./app-assets/images/ico/apple-icon-120.png">
     <link rel="shortcut icon" type="image/x-icon" href="./app-assets/images/ico/favicon.ico">
     <link href="https://fonts.googleapis.com/css?family=Montserrat:300,400,500,600" rel="stylesheet">
@@ -110,8 +109,8 @@ if(isset($_SESSION['loggedin']) == true){
         <div class="main-menu-content">
             <ul class="navigation navigation-main" id="main-menu-navigation" data-menu="menu-navigation">
                 <li class=""><a href="./"><i class="fas fa-network-wired"></i><span class="menu-item" data-i18n="Dashboard">Dashboard</span></a></li>
-                <li class="active"><a href="./create.php"><i class="fas fa-server"></i><span class="menu-item" data-i18n="Dashboard">Create Server</span></a></li>
-                                <li class=""><a href="./account.php"><i class="fas fa-user"></i><span class="menu-item" data-i18n="Dashboard">Your Account</span></a></li>
+                <li class="active"><a href="./order.php"><i class="fas fa-server"></i><span class="menu-item" data-i18n="Dashboard">Order Server</span></a></li>
+                <li class=""><a href="./account.php"><i class="fas fa-user"></i><span class="menu-item" data-i18n="Dashboard">Your Account</span></a></li>
             </ul>
         </div>
     </div>
@@ -127,87 +126,72 @@ if(isset($_SESSION['loggedin']) == true){
             <div class="content-body">
                 <!-- Dashboard Ecommerce Starts -->
                 <section id="dashboard-ecommerce">
-                    <div class="row">
-                    <div class="col-md-12 col-12">
-                            <div class="card">
-                                <div class="card-header">
-                                    <h4 class="card-title">Create A Server!</h4>
+                <!-- Basic Tables start -->
+                <?php 
+                if ($_GET['err']) {
+                    echo '<div class="row">
+                    <div class="col-12">
+                        <div class="card">
+                            <div class="card-header">
+                                <h4 class="card-title">Error!</h4>
+                            </div>
+                            <div class="card-content">
+                                <div class="card-body">
+                                    <p class="card-text">'.base64_decode($_GET['err']).'</p>
                                 </div>
-                                <div class="card-content">
-                                    <div class="card-body">
-                                        <form class="form">
-                                            <div class="form-body">
-                                                <div class="row">
-                                                    <div class="col-12">
-                                                        <div class="form-label-group">
-                                                            <input type="text" name="server_name" class="form-control" placeholder="Server Name" >
-                                                            <label for="first-name-floating">Server Name</label>
-                                                        </div>
-                                                    </div>
-                                                    <div class="col-12">
-                                                        <div class="form-label-group">
-                                                            <input type="number" name="server_ram" class="form-control" placeholder="Server Ram">
-                                                            <label for="email-id-floating">Server Ram</label>
-                                                        </div>
-                                                    </div>
-                                                    <div class="col-12">
-                                                        <div class="form-label-group">
-                                                            <input type="number" id="contact-info-floating" class="form-control" name="server_hdd" placeholder="Server Disk">
-                                                            <label for="contact-info-floating">Server Disk</label>
-                                                        </div>
-                                                    </div>
-                                                    <div class="col-12">
-                                                        <div class="form-label-group">
-                                                            <input type="number" id="password-floating" class="form-control" name="server_cpu" placeholder="Server CPU">
-                                                            <label for="password-floating">Server CPU</label>
-                                                        </div>
-                                                    </div>
-                                                    <div class="col-12"><h3>Server Type</h3></div>
-                                                    <ul class="list-unstyled mb-0" style="padding-left: 17px;">
-                                            <li class="d-inline-block mr-2">
-                                                <fieldset>
-                                                    <div class="custom-control custom-radio">
-                                                        <input type="radio" class="custom-control-input" name="servertype" value="1" id="Bungee">
-                                                        <label class="custom-control-label" for="Bungee">BungeeCord</label>
-                                                    </div>
-                                                </fieldset>
-                                            </li>
-                                            <li class="d-inline-block mr-2">
-                                                <fieldset>
-                                                    <div class="custom-control custom-radio">
-                                                        <input type="radio" class="custom-control-input" name="servertype" value="2" id="forge">
-                                                        <label class="custom-control-label" for="forge">Forge</label>
-                                                    </div>
-                                                </fieldset>
-                                            </li>
-                                            <li class="d-inline-block mr-2">
-                                                <fieldset>
-                                                    <div class="custom-control custom-radio">
-                                                        <input type="radio" class="custom-control-input" name="servertype" value="3" id="paper">
-                                                        <label class="custom-control-label" for="paper">PaperMC</label>
-                                                    </div>
-                                                </fieldset>
-                                            </li>
-                                            <li class="d-inline-block">
-                                                <fieldset>
-                                                    <div class="custom-control custom-radio">
-                                                        <input type="radio" class="custom-control-input" name="servertype" value="5" id="mc">
-                                                        <label class="custom-control-label" for="mc">Vanillia Minecraft</label>
-                                                    </div>
-                                                </fieldset>
-                                            </li>
-                                        </ul>
-                                                    <div class="col-12">
-                                                        <button type="submit" class="btn btn-success mr-1 mb-1">Create Server</button>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        </form>
+                            </div>
+                        </div>
+                    </div>
+                </div>';
+                }
+?>
+                <div class="row" id="basic-table">
+
+                    <div class="col-12">
+                        <div class="card">
+                            <div class="card-header">
+                                <h4 class="card-title">Order A Server!</h4>
+                            </div>
+                            <div class="card-content">
+                                <div class="card-body">
+                                    <div class="table-responsive">
+                                        <table class="table">
+                                            <thead>
+                                                <tr>
+                                                    <th>Server Type</th>
+                                                    <th>Server Memory</th>
+                                                    <th>Server CPU</th>
+                                                    <th>Server Disk</th>
+                                                    <th>Product Price</th>
+                                                    <th>Product Stock</th>
+                                                    <th></th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                        <?php
+$results = mysqli_query($conn, "SELECT * FROM products");
+if( $results->num_rows !== 0 ) {
+   while($rowitem = mysqli_fetch_array($results)) {
+    echo "<tr>";
+    echo "<td>" . htmlspecialchars($rowitem['product_name']) . "</td>";
+    echo "<td>" . htmlspecialchars($rowitem['product_ram']) . "MB</td>";
+    echo "<td>" . htmlspecialchars($rowitem['product_cpu']) . "%</td>";
+    echo "<td>" . htmlspecialchars($rowitem['product_disk']) . "MB</td>";
+    echo "<td>" . htmlspecialchars($rowitem['product_price']) . " coins(s)</td>";
+    echo "<td>" . htmlspecialchars($rowitem['product_stock']) . "</td>";
+    echo "<td>" . '<a href="./api/web/createServer.php?id=' . $rowitem['id'] . '" class="btn btn-success btn-sm" role="button">Buy</a> &nbsp;';
+    echo "</tr>";
+  }}
+?>
+                                            </tbody>
+                                        </table>
                                     </div>
                                 </div>
                             </div>
                         </div>
                     </div>
+                </div>
+                <!-- Basic Tables end -->
                 </section>
                 <!-- Dashboard Ecommerce ends -->
 
@@ -221,7 +205,7 @@ if(isset($_SESSION['loggedin']) == true){
 
     <!-- BEGIN: Footer-->
     <footer class="footer footer-static footer-light">
-        <p class="clearfix blue-grey lighten-2 mb-0"><span class="float-md-left d-block d-md-inline-block mt-25">&copy; 2021<a class="text-bold-800 grey darken-2" href="https://discord.gg/JpZmtYRWYN" target="_blank">Gallear Technologies,</a>All rights Reserved</span><span class="float-md-right d-none d-md-block">Built with <i class="feather icon-heart pink"></i></span>
+        <p class="clearfix blue-grey lighten-2 mb-0"><span class="float-md-left d-block d-md-inline-block mt-25">&copy; 2021<a class="text-bold-800 grey darken-2" href="https://1.envato.market/pixinvent_portfolio" target="_blank">Force Hosting,</a>All rights Reserved</span><span class="float-md-right d-none d-md-block">Built with <i class="feather icon-heart pink"></i></span>
             <button class="btn btn-primary btn-icon scroll-top" type="button"><i class="feather icon-arrow-up"></i></button>
         </p>
     </footer>

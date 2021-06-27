@@ -16,3 +16,7 @@ $dBUsername = "";
 $dBPassword = "";
 $dBName = "";
 $conn = mysqli_connect($serverName, $dBUsername, $dBPassword, $dBName);
+
+if(!$conn){
+	header("location: /errors/500.html");
+}

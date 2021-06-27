@@ -14,6 +14,10 @@ if(isset($_SESSION['loggedin']) == true){
   $siteConfig = $conn->query("SELECT * FROM config")->fetch_assoc();
 $apiKey = $siteConfig['ptero_api'];
 $apiDomain = $siteConfig['ptero_domain'];
+$siteMaintenance = $siteConfig['siteMaintenance'];
+if ($siteMaintenance == 1) {
+    header("location: ../maintenance.php");
+}
   }else{
     header("location: ./login.php");
     die();

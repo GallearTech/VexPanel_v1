@@ -1,5 +1,10 @@
 <?php
 require './config.php';
+$siteConfig = $conn->query("SELECT * FROM config")->fetch_assoc();
+$siteMaintenance = $siteConfig['siteMaintenance'];
+if ($siteMaintenance == 1) {
+    header("location: ./maintenance.php");
+}
 ?>
 <!DOCTYPE html>
 <html class="loading" lang="en" data-textdirection="ltr">

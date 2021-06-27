@@ -8,6 +8,11 @@ if(isset($_SESSION['loggedin']) == true){
   $userCPU = $userInfo['cpu'];
   $userDisk = $userInfo['disk_space'];
   $userSlots = $userInfo['server_slots'];
+  $siteConfig = $conn->query("SELECT * FROM config")->fetch_assoc();
+  $siteMaintenance = $siteConfig['siteMaintenance'];
+  if ($siteMaintenance == 1) {
+  	header("location: ./maintenance.php");
+  }
   }else{
     header("location: ./login.php");
     die();

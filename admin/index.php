@@ -3,6 +3,11 @@ session_start();
 require '../config.php';
 if(isset($_SESSION['loggedin']) == true){
   $user = $_SESSION['user'];
+  $siteConfig = $conn->query("SELECT * FROM config")->fetch_assoc();
+  $siteMaintenance = $siteConfig['siteMaintenance'];
+  if ($siteMaintenance == 1) {
+  	header("location: ../maintenance.php");
+  }
   }else{
     header("location: ../login.php");
     die();

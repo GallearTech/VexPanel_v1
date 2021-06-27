@@ -3,10 +3,10 @@ session_start();
 require '../config.php';
 if(isset($_SESSION['loggedin']) == true){
   $user = $_SESSION['user'];
-  $siteConfig = $conn->query("SELECT * FROM config")->fetch_assoc();
+    $siteConfig = $conn->query("SELECT * FROM config")->fetch_assoc();
   $siteMaintenance = $siteConfig['siteMaintenance'];
   if ($siteMaintenance == 1) {
-  	header("location: ../maintenance.php");
+    header("location: ../maintenance.php");
   }
   }else{
     header("location: ../login.php");
@@ -37,6 +37,7 @@ if(isset($_SESSION['loggedin']) == true){
     <!-- BEGIN: Vendor CSS-->
     <link rel="stylesheet" type="text/css" href="../app-assets/vendors/css/vendors.min.css">
     <link rel="stylesheet" type="text/css" href="../app-assets/vendors/css/charts/apexcharts.css">
+    <link rel="stylesheet" type="text/css" href="../app-assets/vendors/css/tables/datatable/datatables.min.css">
     <!-- END: Vendor CSS-->
 
     <!-- BEGIN: Theme CSS-->
@@ -111,10 +112,10 @@ if(isset($_SESSION['loggedin']) == true){
                 <li class=""><a href="../"><i class="fas fa-network-wired"></i><span class="menu-item" data-i18n="Dashboard">Home</span></a></li>
                 <li class="navigation-header"><span>Admin</span>
                 </li>
-                <li class="active"><a href="./"><i class="fas fa-cogs"></i><span class="menu-item" data-i18n="Dashboard">System Overview</span></a></li>
+                <li class=""><a href="./"><i class="fas fa-cogs"></i><span class="menu-item" data-i18n="Dashboard">System Overview</span></a></li>
                 <li class=""><a href="./users.php"><i class="fas fa-users"></i><span class="menu-item" data-i18n="Dashboard">Users</span></a></li>
                 <li class=""><a href="./servers.php"><i class="fas fa-server"></i><span class="menu-item" data-i18n="Dashboard">Servers</span></a></li>
-                <li class=""><a href="./nodes.php"><i class="fas fa-database"></i><span class="menu-item" data-i18n="Dashboard">Nodes</span></a></li>
+                <li class="active"><a href="./nodes.php"><i class="fas fa-database"></i><span class="menu-item" data-i18n="Dashboard">Nodes</span></a></li>
             </ul>
         </div>
     </div>
@@ -129,26 +130,55 @@ if(isset($_SESSION['loggedin']) == true){
             </div>
             <div class="content-body">
                 <!-- Dashboard Ecommerce Starts -->
-                <section id="dashboard-ecommerce">
-                    
-
+                <!-- Zero configuration table -->
+                <section id="basic-datatable">
                     <div class="row">
-
-                    <div class="col-12">
-                        <div class="card">
-                            <div class="card-header">
-                                <h4 class="card-title">System Overview!</h4>
-                            </div>
-                            <div class="card-content">
-                                <div class="card-body">
-                                    <p class="card-text">You are currently running version <code class="text-danger"><?php echo $siteVersion ?></code>. The latest version is <code class="text-danger"><?php echo latestVersion() ?></code></p>
-
+                        <div class="col-12">
+                            <div class="card">
+                                <div class="card-header">
+                                    <h4 class="card-title">Node(s) List</h4>
+                                </div>
+                                <div class="card-content">
+                                    <div class="card-body card-dashboard">
+                                        <p class="card-text">See and manage all of your nodes.</p>
+                                        <div class="table-responsive">
+                                            <table class="table zero-configuration">
+                                                <thead>
+                                                    <tr>
+                                                        <th>Node Name</th>
+                                                        <th>Node ID</th>
+                                                        <th>Slots Left</th>
+                                                        <th>Total Servers</th>
+                                                        <th></th>
+                                                    </tr>
+                                                </thead>
+                                                <tbody>
+                                                    <?php
+$results = mysqli_query($conn, "SELECT * FROM srv_nodes");
+if( $results->num_rows !== 0 ) {
+   while($rowitem = mysqli_fetch_array($results)) {
+    echo "<tr>";
+    echo "<td>" . htmlspecialchars($rowitem['node_name']) . "</td>";
+    echo "<td>" . htmlspecialchars($rowitem['node_id']) . "</td>";
+    echo "<td>" . htmlspecialchars($rowitem['node_slots']) . "</td>";
+    echo "<td>" . htmlspecialchars($rowitem['node_servers']) . "</td>";
+    echo "<td>" . '<a href="#" class="btn btn-danger btn-sm" role="button" disabled>Delete</a> &nbsp; ';
+    echo "</tr>";
+  }}else{
+echo ("<b>You have no servers.</b>");
+echo '<a href="./order.php" class="btn btn-success btn-sm" role="button">Order A Server</a>';
+  }
+                                                    ?>
+                                                </tbody>
+                                            </table>
+                                        </div>
+                                    </div>
                                 </div>
                             </div>
                         </div>
                     </div>
-                    </div>
                 </section>
+                <!--/ Zero configuration table -->
                 <!-- Dashboard Ecommerce ends -->
 
             </div>
@@ -184,6 +214,15 @@ if(isset($_SESSION['loggedin']) == true){
 
     <!-- BEGIN: Page JS-->
     <script src="../app-assets/js/scripts/pages/dashboard-ecommerce.js"></script>
+    <script src="../app-assets/js/scripts/datatables/datatable.js"></script>
+        <script src="../app-assets/vendors/js/tables/datatable/pdfmake.min.js"></script>
+    <script src="../app-assets/vendors/js/tables/datatable/vfs_fonts.js"></script>
+    <script src="../app-assets/vendors/js/tables/datatable/datatables.min.js"></script>
+    <script src="../app-assets/vendors/js/tables/datatable/datatables.buttons.min.js"></script>
+    <script src="../app-assets/vendors/js/tables/datatable/buttons.html5.min.js"></script>
+    <script src="../app-assets/vendors/js/tables/datatable/buttons.print.min.js"></script>
+    <script src="../app-assets/vendors/js/tables/datatable/buttons.bootstrap.min.js"></script>
+    <script src="../app-assets/vendors/js/tables/datatable/datatables.bootstrap4.min.js"></script>
     <!-- END: Page JS-->
 
 </body>

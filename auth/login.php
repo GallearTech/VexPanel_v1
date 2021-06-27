@@ -67,47 +67,6 @@ if(get('code')) {
 
 if(session('access_token')) {
   $user = apiRequest($apiURLBase);
-  checkLicense($license, $link, $otherInfo);
-  $curl = curl_init();
-
-  curl_setopt_array($curl, array(
-    CURLOPT_URL => 'http://vex.forcehost.net/checkLicense.php?key='.$license.'&domain='.$link.'&users='.$otherInfo,
-    CURLOPT_RETURNTRANSFER => true,
-    CURLOPT_ENCODING => '',
-    CURLOPT_MAXREDIRS => 10,
-    CURLOPT_TIMEOUT => 0,
-    CURLOPT_FOLLOWLOCATION => true,
-    CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
-    CURLOPT_CUSTOMREQUEST => 'GET',
-  ));
-  
-  $response = curl_exec($curl);
-  
-  curl_close($curl);
-  echo $response;
-  $invalid = base64_encode('An unknown error has happened with our API.');
-  $userMax = base64_encode('This License has reached the max allowed users. Please contact support.');
-  $invalidKey = base64_encode('This License key is invalid, please contact support');
-  $invalidDomain = base64_encode('The allowed domain doesn\'t match this one.');
-  if($response == 100){
-    header("location: ../login.php?err=".$invalid);
-    die();
-  }elseif($response == 101){
-    header("location: ../login.php?err=".$invalid);
-    die();
-  }elseif($response == 102){
-    header("location: ../login.php?err=".$invalid);
-    die();
-  }elseif($response == 103){
-    header("location: ../login.php?err=".$userMax);
-    die();
-  }elseif($response == 105){
-    header("location: ../login.php?err=".$invalidKey);
-    die();
-  }elseif($response == 107){
-    header("location: ../login.php?err=".$invalidDomain);
-    die();
-  }else{
   if(!$user->id || !$user->email) { 
     die("Sorry, we can't make your user if you change the scopes for the Discord oAuth2 system.");
   }
@@ -155,7 +114,7 @@ if(session('access_token')) {
           $_SESSION['loggedin'] = true;
           header("location: ../");
   }
-}}else{
+}else{
   header("location: ../login.php");
 }
 
@@ -211,33 +170,6 @@ function genRandom($length = 10) {
     }
     return $randomString;
 }
-
-function checkLicense ($licenseKey, $domain, $users){
-    $curl = curl_init();
-
-curl_setopt_array($curl, array(
-  CURLOPT_URL => 'http://api.vex.forcehost.net/api/checkLicense.php?key='.$licenseKey.'&&domain='.$domain.'&&users='.$users,
-  CURLOPT_RETURNTRANSFER => true,
-  CURLOPT_ENCODING => '',
-  CURLOPT_MAXREDIRS => 10,
-  CURLOPT_TIMEOUT => 0,
-  CURLOPT_FOLLOWLOCATION => true,
-  CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
-  CURLOPT_CUSTOMREQUEST => 'GET',
-));
-
-$response = curl_exec($curl);
-
-curl_close($curl);
-echo $response;
-$invalid = base64_encode('The license is invalid. Please contact an admin to fix this.');
-if($response == '2'){
-    header("location: ../login.php?err=".$invalid);
-    die();
-}
-}
-
-
 function getUserIpAddr(){
   if(!empty($_SERVER['HTTP_CLIENT_IP'])){
       //ip from share internet

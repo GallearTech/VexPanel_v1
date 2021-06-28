@@ -5,6 +5,12 @@ $siteMaintenance = $siteConfig['siteMaintenance'];
 if ($siteMaintenance == 1) {
     header("location: ./maintenance.php");
 }
+if(isMobileDevice()){
+    die("That's not good! We don't have support for mobile devices yet! Check back soon!");
+}
+function isMobileDevice() {
+    return preg_match("/(android|avantgo|blackberry|bolt|boost|cricket|docomo|fone|hiptop|mini|mobi|palm|phone|pie|tablet|up\.browser|up\.link|webos|wos)/i", $_SERVER["HTTP_USER_AGENT"]);
+}
 ?>
 <!DOCTYPE html>
 <html class="loading" lang="en" data-textdirection="ltr">

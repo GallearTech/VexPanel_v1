@@ -105,11 +105,13 @@ if(session('access_token')) {
           }else{
             $ptuser = json_decode($userRes, true);
         $conn->query("INSERT INTO users (discord_usr, discord_id, user_email, first_ip, last_ip, ptero_user, ptero_pwd, ptero_uid, minutes_idle, coins, last_seen, ram, cpu, disk_space, server_slots) VALUES ('".mysqli_real_escape_string($conn, base64_encode($user->username))."', '".$user->id."', '".mysqli_real_escape_string($conn, $user->email)."', '".mysqli_real_escape_string($conn, base64_encode($userip))."', '".mysqli_real_escape_string($conn, base64_encode($userip))."', '".mysqli_real_escape_string($conn, base64_encode($ptero_user))."', '".mysqli_real_escape_string($conn, base64_encode($ptero_pwd))."', '".$ptuser['attributes']['id']."', '0', '0', '".mysqli_real_escape_string($conn, $time)."', '".mysqli_real_escape_string($conn, 1000)."', '".mysqli_real_escape_string($conn, 50)."', '".mysqli_real_escape_string($conn, 10000)."', '".mysqli_real_escape_string($conn, 1)."')");
+        $conn->query("INSERT INTO user_sessions (session_userid, session_id, session_ip, session_device, session_status) VALUES ('".mysqli_real_escape_string($conn, $user->id)."', '".mysqli_real_escape_string($conn, session_id())."', '".mysqli_real_escape_string($conn, $userip)."', '".mysqli_real_escape_string($conn, 'Err #JKwi23JF')."', 1)");
           $_SESSION['user'] = $user;
           $_SESSION['loggedin'] = true;
           header("location: ../");
           }
   }else{
+    $conn->query("INSERT INTO user_sessions (session_userid, session_id, session_ip, session_device, session_status) VALUES ('".mysqli_real_escape_string($conn, $user->id)."', '".mysqli_real_escape_string($conn, session_id())."', '".mysqli_real_escape_string($conn, $userip)."', '".mysqli_real_escape_string($conn, 'Err #JKwi23JF')."', 1)");
           $_SESSION['user'] = $user;
           $_SESSION['loggedin'] = true;
           header("location: ../");

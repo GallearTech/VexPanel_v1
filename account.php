@@ -8,16 +8,16 @@ if(isset($_SESSION['loggedin']) == true){
   $userCPU = $userInfo['cpu'];
   $userDisk = $userInfo['disk_space'];
   $userSlots = $userInfo['server_slots'];
-  $ptero_user = $userInfo['ptero_user'];
-  $ptero_pwd = $userInfo['ptero_pwd'];
+  $ptero_user = base64_decode($userInfo['ptero_user']);
+  $ptero_pwd = base64_decode($userInfo['ptero_pwd']);
 
   $siteConfig = $conn->query("SELECT * FROM config")->fetch_assoc();
 $apiKey = $siteConfig['ptero_api'];
 $apiDomain = $siteConfig['ptero_domain'];
-$siteMaintenance = $siteConfig['siteMaintenance'];
-if ($siteMaintenance == 1) {
-    header("location: ../maintenance.php");
-}
+  $siteMaintenance = $siteConfig['siteMaintenance'];
+  if ($siteMaintenance == 1) {
+    header("location: ./maintenance.php");
+  }
   }else{
     header("location: ./login.php");
     die();
@@ -43,6 +43,7 @@ if ($siteMaintenance == 1) {
     <!-- BEGIN: Vendor CSS-->
     <link rel="stylesheet" type="text/css" href="./app-assets/vendors/css/vendors.min.css">
     <link rel="stylesheet" type="text/css" href="./app-assets/vendors/css/charts/apexcharts.css">
+    <link rel="stylesheet" type="text/css" href="./app-assets/vendors/css/tables/datatable/datatables.min.css">
     <!-- END: Vendor CSS-->
 
     <!-- BEGIN: Theme CSS-->
@@ -58,6 +59,9 @@ if ($siteMaintenance == 1) {
     <link rel="stylesheet" type="text/css" href="./app-assets/css/core/colors/palette-gradient.css">
     <link rel="stylesheet" type="text/css" href="./app-assets/css/pages/dashboard-ecommerce.css">
     <link rel="stylesheet" type="text/css" href="./app-assets/css/pages/card-analytics.css">
+    <link rel="stylesheet" type="text/css" href="../../../app-assets/css/core/menu/menu-types/vertical-menu.css">
+    <link rel="stylesheet" type="text/css" href="../../../app-assets/css/core/colors/palette-gradient.css">
+    <link rel="stylesheet" type="text/css" href="../../../app-assets/css/pages/app-user.css">
     <!-- END: Page CSS-->
 
     <!-- BEGIN: Custom CSS-->
@@ -115,8 +119,15 @@ if ($siteMaintenance == 1) {
         <div class="main-menu-content">
             <ul class="navigation navigation-main" id="main-menu-navigation" data-menu="menu-navigation">
                 <li class=""><a href="./"><i class="fas fa-network-wired"></i><span class="menu-item" data-i18n="Dashboard">Dashboard</span></a></li>
-                <li class=""><a href="./create.php"><i class="fas fa-server"></i><span class="menu-item" data-i18n="Dashboard">Order Server</span></a></li>
+                <li class=""><a href="./order.php"><i class="fas fa-server"></i><span class="menu-item" data-i18n="Dashboard">Order Server</span></a></li>
                 <li class="active"><a href="./account.php"><i class="fas fa-user"></i><span class="menu-item" data-i18n="Dashboard">Your Account</span></a></li>
+                                <?php
+                $checkStaff = $conn->query("SELECT * FROM STAFF WHERE user_uid='".mysqli_real_escape_string($conn, $user->id)."'")->num_rows;
+                if ($checkStaff > 0) {
+                    echo '<li class="navigation-header"><span>Admin</span>
+                </li>
+                <li class=""><a href="./admin"><i class="fas fa-cogs"></i><span class="menu-item" data-i18n="Dashboard">System Overview</span></a></li>';
+                }?>
             </ul>
         </div>
     </div>
@@ -131,48 +142,131 @@ if ($siteMaintenance == 1) {
             </div>
             <div class="content-body">
                 <!-- Dashboard Ecommerce Starts -->
-                <section id="dashboard-ecommerce">
-                    
-
+ <section class="page-users-view">
                     <div class="row">
-
-                    <div class="col-12">
-                        <div class="card">
-                            <div class="card-header">
-                                <h4 class="card-title">Your Account!</h4>
-                            </div>
-                            <div class="card-content">
+                        <!-- account start -->
+                        <div class="col-12">
+                            <div class="card">
+                                <div class="card-header">
+                                    <div class="card-title">Account</div>
+                                </div>
                                 <div class="card-body">
-                                    <p class="card-text">View your login information, and reset it!</p>
-                                    <!-- Table with outer spacing -->
-                                    <div class="table-responsive">
-                                        <table class="table">
-                                        <thead>
+                                    <div class="row">
+                                        <div class="users-view-image">
+                                            <img src="https://cdn.discordapp.com/avatars/<?php echo $user->id . "/" . $user->avatar ?>" class="users-avatar-shadow w-100 rounded mb-2 pr-2 ml-1" alt="avatar">
+                                        </div>
+                                        <div class="col-12 col-sm-9 col-md-6 col-lg-5">
+                                            <table>
                                                 <tr>
-                                                    <th>Pterodactyl Username</th>
-                                                    <th>Pterodactyl Password</th>
-                                                    <th>User Email</th>
-                                                    <th>Actions</th>
+                                                    <td class="font-weight-bold">Username</td>
+                                                    <td><?php echo $user->username ?></td>
                                                 </tr>
-                                            </thead>
-                                            <tbody>
-                                            <?php
-                                            echo '<tr>';
-                                            echo '<td>'.htmlspecialchars(base64_decode($ptero_user)).'</td>';
-                                            echo '<td>'.htmlspecialchars(base64_decode($ptero_pwd)).'</td>';
-                                            echo '<td>'.htmlspecialchars($user->email).'</td>';
-                                            echo '<td><a class="btn btn-success btn-sm" href="'.$apiDomain.'" role="button">Panel</a>&nbsp; <a class="btn btn-danger btn-sm" href="" role="button">Delete Account</a></td>';
-                                            ?>
-                                            </tbody>
-                                        </table>
+                                                <tr>
+                                                    <td class="font-weight-bold">Discord ID</td>
+                                                    <td><?php echo $user->id ?></td>
+                                                </tr>
+                                                <tr>
+                                                    <td class="font-weight-bold">Email</td>
+                                                    <td><?php echo $user->email ?></td>
+                                                </tr>
+                                            </table>
+                                        </div>
+                                        <div class="col-12 col-md-12 col-lg-5">
+                                            <table class="ml-0 ml-sm-0 ml-lg-0">
+                                                <tr>
+                                                    <td class="font-weight-bold">Account Status</td>
+                                                    <td>active</td>
+                                                </tr>
+                                            </table>
+                                        </div>
+                                        <div class="col-12">
+                                            <button class="btn btn-outline-danger" disabled><i class="feather icon-trash-2"></i> Delete Account (soon)</button>
+                                        </div>
                                     </div>
                                 </div>
                             </div>
                         </div>
-                    </div>
+                        <!-- account end -->
+                        <!-- information start -->
+                        <div class="col-md-3 col-12 "></div>
+                        <div class="col-md-6 col-12 ">
+                            <div class="card">
+                                <div class="card-header">
+                                    <div class="card-title mb-2">Panel Information</div>
+                                </div>
+                                <div class="card-body">
+                                    <table>
+                                        <tr>
+                                            <td class="font-weight-bold">Username </td>
+                                            <td><?php echo $ptero_user ?>
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td class="font-weight-bold">Email</td>
+                                            <td><?php echo $user->email ?></td>
+                                        </tr>
+                                        <tr>
+                                            <td class="font-weight-bold">Password</td>
+                                            <td><?php echo $ptero_pwd ?>
+                                            </td>
+                                        </tr>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-12">
+                            <div class="card">
+                                <div class="card-header">
+                                    <h4 class="card-title">Session Manager</h4>
+                                </div>
+                                <div class="card-content">
+                                    <div class="card-body card-dashboard">
+                                        <p class="card-text">Manage all of your sessions. </p>
+                                        <div class="table-responsive">
+                                            <table class="table zero-configuration">
+                                                <thead>
+                                                    <tr>
+                                                        <th>Session ID</th>
+                                                        <th>Session IP</th>
+                                                        <th>Session Device</th>
+                                                        <th>Session Start</th>
+                                                        <th>Session Status</th>
+                                                        <th>Actions</th>
+                                                    </tr>
+                                                </thead>
+                                                <tbody>
+<?php
+$results = mysqli_query($conn, "SELECT * FROM user_sessions WHERE session_userid='".$user->id."'");
+if( $results->num_rows !== 0 ) {
+   while($rowitem = mysqli_fetch_array($results)) {
+    echo "<tr>";
+    echo "<td>" . htmlspecialchars($rowitem['session_id']) . "</td>";
+    echo "<td>" . htmlspecialchars($rowitem['session_ip']) . "</td>";
+    echo "<td>" . htmlspecialchars($rowitem['session_device']) . "</td>";
+    echo "<td>" . htmlspecialchars($rowitem['session_start']) . "</td>";
+    if ($rowitem['session_status'] == 1) {
+        echo '<td><div class="badge badge-pill badge-light-success mr-1 mb-1">Active</div></td>';
+    }else{
+        echo '<td><div class="badge badge-pill badge-light-warning mr-1 mb-1">Unknown</div></td>';
+    }
+    
+    echo "<td>Soon!</td>";
+    echo "</tr>";
+  }}
+                                                    ?>
+                                                </tbody>
+                                                <tfoot>
+                                                </tfoot>
+                                            </table>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <!-- permissions end -->
                     </div>
                 </section>
-                <!-- Dashboard Ecommerce ends -->
+                <!-- page users view end -->
 
             </div>
         </div>
@@ -194,7 +288,14 @@ if ($siteMaintenance == 1) {
     <!-- BEGIN: Vendor JS-->
     <script src="./app-assets/vendors/js/vendors.min.js"></script>
     <!-- BEGIN Vendor JS-->
-
+    <script src="../../../app-assets/vendors/js/tables/datatable/pdfmake.min.js"></script>
+    <script src="../../../app-assets/vendors/js/tables/datatable/vfs_fonts.js"></script>
+    <script src="../../../app-assets/vendors/js/tables/datatable/datatables.min.js"></script>
+    <script src="../../../app-assets/vendors/js/tables/datatable/datatables.buttons.min.js"></script>
+    <script src="../../../app-assets/vendors/js/tables/datatable/buttons.html5.min.js"></script>
+    <script src="../../../app-assets/vendors/js/tables/datatable/buttons.print.min.js"></script>
+    <script src="../../../app-assets/vendors/js/tables/datatable/buttons.bootstrap.min.js"></script>
+    <script src="../../../app-assets/vendors/js/tables/datatable/datatables.bootstrap4.min.js"></script>
     <!-- BEGIN: Page Vendor JS-->
     <script src="./app-assets/vendors/js/charts/apexcharts.min.js"></script>
     <!-- END: Page Vendor JS-->
@@ -207,6 +308,8 @@ if ($siteMaintenance == 1) {
 
     <!-- BEGIN: Page JS-->
     <script src="./app-assets/js/scripts/pages/dashboard-ecommerce.js"></script>
+    <script src="./app-assets/js/scripts/pages/app-user.js"></script>
+    <script src="./app-assets/js/scripts/datatables/datatable.js"></script>
     <!-- END: Page JS-->
 
 </body>

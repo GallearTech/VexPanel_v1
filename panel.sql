@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: localhost
--- Generation Time: Jun 27, 2021 at 09:42 AM
+-- Generation Time: Jun 28, 2021 at 07:59 AM
 -- Server version: 10.4.17-MariaDB
 -- PHP Version: 8.0.2
 
@@ -48,14 +48,13 @@ CREATE TABLE `config` (
   `guildId` bigint(128) NOT NULL,
   `importantInfoId` bigint(128) NOT NULL,
   `mainTheme` int(111) NOT NULL,
-  `siteMaintenance` int(111) NOT NULL
+  `siteMaintenance` int(111) NOT NULL,
+  `proxy_block` varchar(128) NOT NULL DEFAULT '1'
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 --
 -- Dumping data for table `config`
 --
-
-
 
 -- --------------------------------------------------------
 
@@ -80,7 +79,6 @@ CREATE TABLE `products` (
 --
 
 
-
 -- --------------------------------------------------------
 
 --
@@ -102,7 +100,6 @@ CREATE TABLE `servers` (
 --
 -- Dumping data for table `servers`
 --
-
 
 
 -- --------------------------------------------------------
@@ -211,6 +208,26 @@ CREATE TABLE `users` (
 --
 
 
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `user_sessions`
+--
+
+CREATE TABLE `user_sessions` (
+  `id` int(11) NOT NULL,
+  `session_userid` bigint(111) NOT NULL,
+  `session_id` varchar(128) NOT NULL,
+  `session_ip` varchar(128) NOT NULL,
+  `session_device` varchar(128) NOT NULL,
+  `session_start` timestamp NOT NULL DEFAULT current_timestamp(),
+  `session_status` int(11) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+--
+-- Dumping data for table `user_sessions`
+--
+
 --
 -- Indexes for dumped tables
 --
@@ -270,6 +287,12 @@ ALTER TABLE `users`
   ADD PRIMARY KEY (`id`);
 
 --
+-- Indexes for table `user_sessions`
+--
+ALTER TABLE `user_sessions`
+  ADD PRIMARY KEY (`id`);
+
+--
 -- AUTO_INCREMENT for dumped tables
 --
 
@@ -307,7 +330,7 @@ ALTER TABLE `srv_nodes`
 -- AUTO_INCREMENT for table `staff`
 --
 ALTER TABLE `staff`
-  MODIFY `id` int(111) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
+  MODIFY `id` int(111) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
 
 --
 -- AUTO_INCREMENT for table `tickets`
@@ -325,7 +348,13 @@ ALTER TABLE `ticket_msgs`
 -- AUTO_INCREMENT for table `users`
 --
 ALTER TABLE `users`
-  MODIFY `id` int(111) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
+  MODIFY `id` int(111) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=6;
+
+--
+-- AUTO_INCREMENT for table `user_sessions`
+--
+ALTER TABLE `user_sessions`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
 COMMIT;
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;

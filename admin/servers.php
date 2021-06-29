@@ -14,7 +14,7 @@ if(isset($_SESSION['loggedin']) == true){
   }
   $checkStaff = $conn->query("SELECT * FROM staff WHERE user_uid='".mysqli_real_escape_string($conn, $user->id)."'")->num_rows;
   if ($checkStaff == 0) {
-  	header("location: ../");
+    header("location: ../");
 }
 ?>
 <!DOCTYPE html>
@@ -133,6 +133,23 @@ if(isset($_SESSION['loggedin']) == true){
                 <!-- Zero configuration table -->
                 <section id="basic-datatable">
                     <div class="row">
+<?php
+if ($_GET['err']) {
+    echo '                        <div class="col-md-3 col-12 "></div>
+                        <div class="col-md-6 col-12 ">
+                            <div class="card">
+                                <div class="card-header">
+                                    <h4 class="card-title">Error!</h4>
+                                </div>
+                                <div class="card-content">
+                                    <div class="card-body card-dashboard">
+                                        <p class="card-text text-danger">'.base64_decode($_GET['err']).'</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>';
+}
+?>
                         <div class="col-12">
                             <div class="card">
                                 <div class="card-header">
@@ -152,6 +169,7 @@ if(isset($_SESSION['loggedin']) == true){
                                                         <th>Server Disk</th>
                                                         <th>Server Owner</th>
                                                         <th>Creation Date</th>
+                                                        <th></th>
                                                     </tr>
                                                 </thead>
                                                 <tbody>
@@ -167,6 +185,7 @@ if( $results->num_rows !== 0 ) {
     echo "<td>" . htmlspecialchars($rowitem['server_disksp']) . "</td>";
     echo "<td>" . htmlspecialchars($rowitem['owner_id']) . "</td>";
     echo "<td>" . htmlspecialchars($rowitem['created_on']) . "</td>";
+    echo '<td><a href="../api/web/suspendServer.php?id='.$rowitem['server_uid'].'" type="button" class="btn btn-icon btn-icon rounded-circle btn-warning mr-1 mb-1 waves-effect waves-light"><i class="far fa-pause-circle"></i></a></td>';
     echo "</tr>";
   }}else{
 echo ("<b>You have no servers.</b>");

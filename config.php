@@ -1,6 +1,6 @@
 <?php
 $siteName = '';
-$siteVersion = "v1.2 BETA";
+$siteVersion = "v1.3.2 BETA";
 
 function latestVersion(){
 	$latestVersion = file_get_contents("https://raw.githubusercontent.com/GallearTech/VexPanel_v1/main/latestVersion.txt");
